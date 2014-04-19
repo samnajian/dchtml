@@ -7,6 +7,7 @@
 
 class DCHtml {
     public static $closeSingleTags = true;
+    public static $allowSpecialCharacters = true;
 
     /**
      * @param $htmlOptions
@@ -62,7 +63,7 @@ class DCHtml {
                 if($value)
                 {
                     $html .= ' ' . $name;
-                    if(self::$renderSpecialAttributesValue)
+                    if(self::$allowSpecialCharacters)
                         $html .= '="' . $name . '"';
                 }
             }
@@ -113,9 +114,92 @@ class DCHtml {
      * @param $htmlOptions
      * @return string
      */
-    public static function link($text, $url, $htmlOptions)
+    public static function link($text, $url, $htmlOptions = array())
     {
         $htmlOptions['href'] = $url;
         return self::tag('a', $htmlOptions, false, false) . $text . self::closeTag("a");
     }
-} 
+
+    /**
+     * @param $text
+     * @param null $for
+     * @param $htmlOptions
+     * @return string
+     */
+    public static function label($text, $for = null, $htmlOptions = array()){
+       $htmlOptions['for'] = $for;
+        return self::tag("label", $htmlOptions, false, false) . $text . self::closeTag("label");
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @param $type
+     * @param $htmlOptions
+     * @return string
+     */
+    public static function input($name, $value, $type, $htmlOptions){
+        $htmOptions['name'] = $name;
+        $htmOptions['value'] = $value;
+        $htmOptions['type'] = $type;
+        return self::tag("input", $htmOptions, false, true);
+    }
+
+    /**
+     * @param $name
+     * @param null $value
+     * @param array $htmOptions
+     * @return string
+     */
+    public static function textField($name, $value = null, $htmOptions = array()){
+        return self::input($name, $value, "text", $htmOptions);
+    }
+
+    public static function hiddendField($name, $value = null, $htmlOptions = array()){
+        return self::input($name, $value, "hidden", $htmlOptions);
+    }
+    /**
+     * @param $name
+     * @param null $value
+     * @param array $htmlOptions
+     * @return string
+     */
+    public static function textarea($name, $value = null, $htmlOptions = array()){
+        $htmlOptions['name'] = $name;
+        $htmlOptions['id'] = !isset( $htmlOptions['id'] ) ? str_replace( "]", "-", str_replace("[", "-", $name) ) : $htmlOptions['id'];
+        return self::tag("textarea", $htmlOptions, false, false) . $value . self::closeTag("textarea");
+    }
+
+    /**
+     * @param $name
+     * @param array $options
+     * @param null $selected
+     * @param null $option_none
+     * @param $htmlOptions
+     * @return string
+     */
+    public static function select($name, $options = array(), $selected = null, $option_none = null, $htmlOptions){
+        $htmlOptions['name'] = $name;
+        $html = "";
+        $html .= self::tag("select", $htmlOptions, false, false);
+
+        if( null !== $option_none ){
+            $html .= self::tag("option", array(
+                'value' => 0
+            ), false) . $option_none . self::closeTag("option");
+        }
+
+        foreach( $options as $key => $value ){
+            $htmlOption = array(
+                "value" => $key,
+            );
+            if( null !== $selected && $key == $selected ){
+                $htmlOption['selected'] = "selected";
+            }
+            $html .= self::tag("option", $htmlOption , false, false) . $value . self::closeTag("option");
+        }
+
+        $html .= self::closeTag("select");
+        return $html;
+    }
+}
