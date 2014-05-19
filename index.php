@@ -6,7 +6,6 @@
  */
 include "DCHtml.php";
 ?>
-
 <h3>Anchor tag</h3><?php echo DCHtml::link("asfasd", "http://google.com", array('class' => 'asdsa')); ?>
 <hr/>
 
@@ -35,4 +34,12 @@ include "DCHtml.php";
     )
 ) ?>
 <hr/>
+
+<h3>Image</h3>
+<?php
+    echo DCHtml::image("http://northchathamlibrary.org/files/2014/05/Bird.jpg", "alt text", array(
+        'class' => "image_class",
+        'width' => 200
+    ));
+?>
 

@@ -202,4 +202,10 @@ class DCHtml {
         $html .= self::closeTag("select");
         return $html;
     }
+
+    public static function image($src, $alt, $htmlOptions){
+        $htmlOptions['alt'] = $alt;
+        $htmlOptions['src'] = $src;
+        return self::tag("img", $htmlOptions, false, true);
+    }
 }
