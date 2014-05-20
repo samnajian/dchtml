@@ -203,9 +203,24 @@ class DCHtml {
         return $html;
     }
 
+    /**
+     * @param $src
+     * @param $alt
+     * @param $htmlOptions
+     * @return string
+     */
     public static function image($src, $alt, $htmlOptions){
         $htmlOptions['alt'] = $alt;
         $htmlOptions['src'] = $src;
         return self::tag("img", $htmlOptions, false, true);
+    }
+
+    public static function button( $label, $htmlOptions ){
+        return self::input(null, $label, "button", $htmlOptions);
+    }
+
+    public static function html_button( $label, $type, $htmlOptions ){
+        $htmlOptions['type'] = $type;
+        return self::tag("button", $htmlOptions, false, false) . $label . self::closeTag("button");
     }
 }
