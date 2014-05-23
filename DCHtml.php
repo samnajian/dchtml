@@ -1,6 +1,5 @@
 <?php
 /**
- * User: samnajian
  * Date: 1/22/14
  * Time: 2:18 AM
  */
@@ -127,7 +126,7 @@ class DCHtml {
      * @return string
      */
     public static function label($text, $for = null, $htmlOptions = array()){
-       $htmlOptions['for'] = $for;
+        $htmlOptions['for'] = $for;
         return self::tag("label", $htmlOptions, false, false) . $text . self::closeTag("label");
     }
 
@@ -138,7 +137,7 @@ class DCHtml {
      * @param $htmlOptions
      * @return string
      */
-    public static function input($name, $value, $type, $htmlOptions){
+    public static function input($name, $value, $type, $htmlOptions = array()){
         $htmOptions['name'] = $name;
         $htmOptions['value'] = $value;
         $htmOptions['type'] = $type;
@@ -178,15 +177,15 @@ class DCHtml {
      * @param $htmlOptions
      * @return string
      */
-    public static function select($name, $options = array(), $selected = null, $option_none = null, $htmlOptions){
+    public static function select($name, $options = array(), $selected = null, $option_none = null, $htmlOptions = array()){
         $htmlOptions['name'] = $name;
         $html = "";
         $html .= self::tag("select", $htmlOptions, false, false);
 
         if( null !== $option_none ){
             $html .= self::tag("option", array(
-                'value' => 0
-            ), false) . $option_none . self::closeTag("option");
+                    'value' => 0
+                ), false, false) . $option_none . self::closeTag("option");
         }
 
         foreach( $options as $key => $value ){
@@ -209,18 +208,43 @@ class DCHtml {
      * @param $htmlOptions
      * @return string
      */
-    public static function image($src, $alt, $htmlOptions){
+    public static function image($src, $alt, $htmlOptions = array()){
         $htmlOptions['alt'] = $alt;
         $htmlOptions['src'] = $src;
         return self::tag("img", $htmlOptions, false, true);
     }
 
-    public static function button( $label, $htmlOptions ){
+    public static function button( $label, $htmlOptions = array() ){
         return self::input(null, $label, "button", $htmlOptions);
     }
 
-    public static function html_button( $label, $type, $htmlOptions ){
+    public static function html_button( $label, $type, $htmlOptions = array() ){
         $htmlOptions['type'] = $type;
         return self::tag("button", $htmlOptions, false, false) . $label . self::closeTag("button");
+    }
+
+    /**
+     * Limits text to given $limit
+     *
+     * @param $text
+     * @param $limit
+     * @param string $tail
+     * @param bool $word_shrink
+     * @param null $allowable_tags
+     * @return string
+     */
+    public static function limit_text( $text, $limit, $tail = " ...", $word_shrink = true, $allowable_tags = null ){
+        $text = strip_tags($text, $allowable_tags);
+        if ($word_shrink) {
+            $pos = @strpos($text, " ", $limit);
+        } else {
+            $pos = $limit;
+        }
+
+        if ($pos && strlen($text) > $limit) {
+            return substr($text, 0, $pos) . $tail;
+        } else {
+            return $text;
+        }
     }
 }
